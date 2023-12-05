@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  ingestor:
+    container_name: ingestor
+    build: .
+    env_file:
+      - local.env
+    environment:
+      - SPEED=1
+    ports:
+      - 9089:9089
+    volumes:
+      - '/Users/Shared/spark-apps:/Users/Shared/spark-apps:rw'
+      - '/Users/Shared/in-files:/Users/Shared/in-files:rw'
+      - '/Users/Shared/out-files:/Users/Shared/out-files:rw'
+      - '/Users/Shared/err-files:/Users/Shared/err-files:rw'
+    networks:
+      - ailegorretaNet
+
+networks:
+  ailegorretaNet:
+    external: true
