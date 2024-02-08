@@ -1,11 +1,38 @@
 version: '3.8'
 
 services:
+
+  param-ingestor-service:
+    image: "ailegorreta/param-ingestor-service"
+    container_name: param-ingestor-service
+    ports:
+      - "8349:8349"
+      #- "8001:8001"
+    deploy:
+      resources:
+        limits:
+          memory: 768m
+    networks:
+      - ailegorretaNet
+    environment:
+      - BPL_JVM_THREAD_COUNT=50
+      # - BPL_DEBUG_ENABLED=false
+      # - BPL_DEBUG_PORT=8001
+      - SPRING_CLOUD_CONFIG_URI=http://config-service:8071
+      - SPRING_PROFILES_ACTIVE=local
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-service:8070/eureka/
+      - EUREKA_CLIENT_REGISTERWITHEUREKA=true
+      # ^ This flag is true just only for docker container.For Kubernetes must be false since Ingress is used as service discovery
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ailegorreta-postgres:5452/paramdb
+      - SPRING_R2DBC_URL=r2dbc:postgresql://ailegorreta-postgres:5452/paramdb
+      
   ingestor:
     container_name: ingestor
     build: .
     env_file:
       - local.env
+    depends_on:
+      - param-ingestor-service
     environment:
       - SPEED=1
     ports:
@@ -18,6 +45,34 @@ services:
     networks:
       - ailegorretaNet
 
+  bup-bulk-service:
+    image: "ailegorreta/bup-bulk-service"
+    container_name: bup-bulk-service
+    ports:
+      - "8541:8541"
+      #- "8001:8001"
+    deploy:
+      resources:
+        limits:
+          memory: 768m
+    networks:
+      - ailegorretaNet
+    depends_on:
+      - param-ingestor-service
+    environment:
+      - BPL_JVM_THREAD_COUNT=50
+      # - BPL_DEBUG_ENABLED=false
+      # - BPL_DEBUG_PORT=8001
+      - SPRING_CLOUD_CONFIG_URI=http://config-service:8071
+      - SPRING_PROFILES_ACTIVE=local
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-service:8070/eureka/
+      - EUREKA_CLIENT_REGISTERWITHEUREKA=true
+      # ^ This flag is true just only for docker container.For Kubernetes must be false since Ingress is used as service discovery
+      - GATEWAY_SERVICE_URL=http://gateway-service:8072
+      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=http://ailegorreta-kafka:9092
+      - MICROSERVICE_BUP_PROVIDER_URI=http://gateway-service:8072/ailegorreta/bup-service
+
+      
 networks:
   ailegorretaNet:
     external: true

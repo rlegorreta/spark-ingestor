@@ -565,7 +565,7 @@ Use the .env variable to obtain the spark-master uri and any other environment v
 
 This is the recommended method to run inside the Docker desktop that creates a container called 'spark-ingestor'
 
-```
+```bash
 cd ingestor
 docker compose up
 ```
@@ -577,14 +577,14 @@ First you have to go to the '/ingestor' directory.
 1.-Build the Docker Pyhton image:
 
 ```bash
-bash build.sh pyingestor spark-ingestor
+bash build.sh ingestor spark-ingestor
 ```
 
 2.-Run the Docker container:
 
 ```bash
-docker rm pyingestor
-docker run --network lmassNet --name pyingestor bde2020/spark-pyingestor:1.0.0
+docker rm spark-ingestor
+docker run --network ailegorretaNet --name ingestor bde2020/spark-ingestor:1.0.0
 ```
 
 ### Data validation spark job

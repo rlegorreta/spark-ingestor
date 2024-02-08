@@ -43,7 +43,7 @@ class Schema:
         self.validators = []
         self.columns = []
         self.system_dates = None
-        self.DEFINED_PATTERNS = {'telefono': "^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$",
+        self.DEFINED_PATTERNS = {'telefono': "^(\+\d{1,3}\s)?\(?\d{1,4}\)?[\s.-]\d{3}[\s.-]\d{4}$",
                                  'RFC': "/^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])$/",
                                  'codigo_postal': '^\d{5}(?:[-\s]\d{4})?$',
                                  'email': "([-!#-'*+/-9=?A-Z^-~]+(\.[-!#-'*+/-9=?A-Z^-~]+)*|\"([]!#-[^-~ \t]|(\\[\t -~]))+\")@([-!#-'*+/-9=?A-Z^-~]+(\.[-!#-'*+/-9=?A-Z^-~]+)*|\[[\t -Z^-~]*])"
@@ -206,7 +206,7 @@ class Schema:
         return None
 
     def attrMinLength(self, attr):
-        if 'min_lLongitud' in attr:
+        if 'min_longitud' in attr:
             return attr['min_longitud']
         return None
 
@@ -272,4 +272,3 @@ class AttrType(Enum):
     DATE_TIME = 6
     ENUM = 7
     UNKNOWN = 8
-
